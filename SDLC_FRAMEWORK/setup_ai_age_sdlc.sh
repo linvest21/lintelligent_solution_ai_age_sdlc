@@ -166,18 +166,18 @@ deploy_core_files() {
     echo -e "${YELLOW}📦 Deploying AI_AGE_SDLC core files...${NC}"
     
     # Copy core SDLC files
-    cp SDLC_FRAMEWORK/core/CLAUDE.md .
-    cp SDLC_FRAMEWORK/core/CLAUDE_AI_AGE_SDLC.md docs/
+    cp core/CLAUDE.md .
+    cp core/CLAUDE_AI_AGE_SDLC.md docs/
     
     # Copy and make executable the master script
-    cp SDLC_FRAMEWORK/scripts/ai_age_sdlc_master.sh scripts/
+    cp scripts/ai_age_sdlc_master.sh .
     chmod +x scripts/ai_age_sdlc_master.sh
     
     # Copy configuration files
-    cp -r SDLC_FRAMEWORK/config/* config/ 2>/dev/null || true
+    cp -r config/* config/ 2>/dev/null || true
     
     # Copy documentation
-    cp -r SDLC_FRAMEWORK/docs/* docs/ 2>/dev/null || true
+    cp -r docs/* docs/ 2>/dev/null || true
     
     echo -e "${GREEN}✅ Core SDLC files deployed${NC}"
 }
