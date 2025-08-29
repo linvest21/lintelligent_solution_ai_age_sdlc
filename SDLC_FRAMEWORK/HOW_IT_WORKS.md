@@ -37,22 +37,30 @@ The shell scripts (`setup_ai_age_sdlc.sh`) are ONLY for:
 │  all the rules automatically           │
 └─────────────────────────────────────────┘
 
-## 📋 The Real Workflow (CLAUDE.md-based)
+## 📋 The CORRECT Workflow Sequence (MANDATORY ORDER!)
 
-### Step 1: Setup (One-time only)
+### ⚠️ STEP 0: SETUP SERVICES FIRST (MANDATORY!)
 ```bash
-# Run setup to create structure and .env
-cd SDLC_FRAMEWORK
-./setup_ai_age_sdlc.sh
+# 1. Run service setup wizard - MUST BE FIRST!
+./setup_sdlc_services.sh
+
+# 2. Validate all connections work
+./validate_sdlc_setup.sh
+
+# 3. Must show ALL GREEN before proceeding
 ```
 
-### Step 2: Development (CLAUDE.md takes over)
-When you start coding with Claude Code:
+**🚫 Claude will REFUSE to work without this setup complete! 🚫**
 
-1. **Claude reads CLAUDE.md** automatically
-2. **Enforces all phases**:
-   - PHASE 1: Pre-Development (Jira ticket required)
-   - PHASE 2: Development Mode Selection
+### STEP 1: Start Development Session with Claude
+When you open Claude Code, the sequence is:
+
+1. **Claude validates setup** using `claude_setup_validator.sh`
+2. **Claude demands Jira ticket ID** - no exceptions
+3. **Claude fetches Confluence spec** from the Jira ticket link
+4. **Claude enforces all development phases**:
+   - PHASE 1: Pre-Development Validation
+   - PHASE 2: Development Mode Selection  
    - PHASE 3: Development Execution
    - PHASE 4: Testing Requirements (80% coverage)
    - PHASE 5: Pre-Commit Validation
@@ -80,22 +88,33 @@ Claude will **ABSOLUTELY REFUSE** to proceed with:
 
 ## ✅ How to Use Correctly
 
-1. **Initial Setup** (once):
+1. **MANDATORY SETUP FIRST** (before ANY development):
    ```bash
-   ./setup_ai_age_sdlc.sh  # Creates structure & .env
+   # Step 1: Configure all services
+   ./setup_sdlc_services.sh
+   
+   # Step 2: Validate connections
+   ./validate_sdlc_setup.sh
+   
+   # Step 3: Must show ALL services ready
    ```
 
-2. **Daily Development**:
-   - Open your project in Claude Code
-   - CLAUDE.md is automatically loaded
-   - Start coding - Claude enforces all rules
-
-3. **Example Interaction**:
+2. **Development Session** (every time):
    ```
    You: "Help me implement a new feature"
-   Claude: "Please provide the Jira ticket ID for this task"
-   You: "AINV-707"
-   Claude: [Validates ticket, fetches Confluence spec, enforces workflow]
+   Claude: [Runs setup validation first]
+   Claude: "Setup validated. Please provide Jira ticket ID"
+   You: "AISD-123"  
+   Claude: [Validates ticket, fetches Confluence spec]
+   Claude: "Specification found. Ready to proceed with development."
+   ```
+
+3. **The Correct Interaction Flow**:
+   ```
+   ✅ Services Setup Complete
+   ✅ Jira Ticket: AISD-123 validated
+   ✅ Confluence Spec: Found and validated  
+   ✅ Ready for SDLC-compliant development
    ```
 
 ## 📁 File Responsibilities

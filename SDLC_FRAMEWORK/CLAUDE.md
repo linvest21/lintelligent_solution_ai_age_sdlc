@@ -63,16 +63,56 @@ GITHUB_TOKEN: [Stored in .env]
 ┌─────────────────────────────────────────────────────────────┐
 │  🚨 ENFORCEMENT NOTICE 🚨                                   │
 │                                                             │
-│  This SDLC framework is ABSOLUTELY MANDATORY                │
-│  There are NO exceptions, NO bypasses, NO shortcuts        │
+│  MANDATORY SEQUENCE - MUST BE FOLLOWED IN ORDER:           │
 │                                                             │
-│  EVERY single line of code MUST follow this process        │
-│  EVERY commit MUST be compliant                            │
-│  EVERY task MUST have a Jira ticket                        │
+│  1. SETUP: Configure Confluence, Jira, GitHub access       │
+│  2. VALIDATE: Test all service connections                  │
+│  3. JIRA TICKET: Get assigned ticket from Jira             │
+│  4. CONFLUENCE SPEC: Get linked specification               │
+│  5. DEVELOPMENT: Follow all SDLC phases                     │
 │                                                             │
-│  NON-COMPLIANCE = IMMEDIATE STOP                            │
+│  SKIP ANY STEP = IMMEDIATE STOP                             │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+## 🔧 STEP 0: MANDATORY SERVICE SETUP (MUST BE FIRST!)
+
+**🚫 CLAUDE WILL REFUSE ALL WORK WITHOUT PROPER SETUP 🚫**
+
+Before ANY development work can begin, you MUST:
+
+### 1. Configure All Services
+```bash
+# Run the service setup wizard
+./setup_sdlc_services.sh
+
+# This configures:
+# - Jira account and project
+# - Confluence space and templates
+# - GitHub repository and branches
+# - API tokens and credentials
+```
+
+### 2. Validate All Connections  
+```bash
+# Test all service connectivity
+./validate_sdlc_setup.sh
+
+# Must show ALL GREEN:
+# ✅ Jira: Ready
+# ✅ Confluence: Ready  
+# ✅ GitHub: Ready
+```
+
+### 3. Verify Compliance
+```bash
+# Run full compliance check
+./enforce_sdlc_compliance.sh
+
+# Must achieve: 100% COMPLIANCE
+```
+
+**⚠️ CRITICAL: Claude will CHECK these steps and REFUSE to proceed if any are missing!**
 
 ## 🛡️ ENFORCEMENT MECHANISMS
 
@@ -94,9 +134,41 @@ Claude Code will **AUTOMATICALLY ENFORCE** these rules:
 
 ## 🚦 MANDATORY WORKFLOW ENFORCEMENT
 
-### PHASE 1: Pre-Development Validation
+### STEP 1: SERVICE SETUP VALIDATION (PREREQUISITE)
+**🚫 CLAUDE WILL CHECK THIS FIRST - NO EXCEPTIONS 🚫**
 
-#### 1.1 Jira Ticket Verification
+Before any development discussion:
+1. Verify .env file exists with all credentials
+2. Test Jira API connection
+3. Test Confluence API connection  
+4. Test GitHub API connection
+5. Confirm all services are operational
+
+**IF ANY SERVICE FAILS → IMMEDIATE STOP → GO SETUP SERVICES FIRST**
+
+### STEP 2: JIRA TICKET ACQUISITION 
+
+**🚫 NO WORK WITHOUT ASSIGNED JIRA TICKET 🚫**
+
+Process:
+1. User provides Jira ticket ID (e.g., AISD-123)
+2. Claude validates ticket exists via API
+3. Claude confirms ticket is assigned to user
+4. Claude verifies ticket status allows development
+
+### STEP 3: CONFLUENCE SPECIFICATION RETRIEVAL
+
+**🚫 NO CODING WITHOUT COMPLETE SPECS 🚫**
+
+Process:
+1. Claude extracts Confluence link from Jira ticket
+2. Claude fetches specification via API
+3. Claude validates spec contains all required sections
+4. Claude confirms spec is approved for development
+
+### PHASE 1: Pre-Development Validation (After Setup Complete)
+
+#### 1.1 Jira Ticket Verification (Already Done in Step 2)
 **🚫 ABSOLUTE REQUIREMENT - ZERO TOLERANCE FOR NON-COMPLIANCE 🚫**
 **STOP - DO NOT PROCEED WITHOUT COMPLETING:**
 - [ ] Jira ticket ID provided: `[PROJ-XXXX]`
