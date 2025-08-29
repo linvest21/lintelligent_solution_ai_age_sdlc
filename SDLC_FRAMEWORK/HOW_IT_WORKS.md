@@ -2,7 +2,11 @@
 
 ## ⚡ Quick Summary
 
+**🚫 AI_AGE_SDLC IS 100% ENFORCED - ZERO TOLERANCE! 🚫**
+
 **CLAUDE.md IS THE SDLC FRAMEWORK** - Not the shell scripts!
+
+**⚠️ ABSOLUTE ENFORCEMENT: Every single line of code MUST follow this process ⚠️**
 
 The shell scripts (`setup_ai_age_sdlc.sh`) are ONLY for:
 - Initial directory structure creation
@@ -54,12 +58,14 @@ When you start coding with Claude Code:
    - PHASE 5: Pre-Commit Validation
    - PHASE 6: Post-Development Validation
 
-### Step 3: Claude Enforces Rules
-Claude will:
-- ❌ **REFUSE** to write code without a Jira ticket
-- ❌ **REFUSE** to commit without 80% test coverage
-- ❌ **REFUSE** to modify unauthorized files
-- ✅ **ENFORCE** all SDLC policies automatically
+### Step 3: Claude Enforces Rules with ZERO TOLERANCE
+Claude will **ABSOLUTELY REFUSE** to proceed with:
+- ❌ **WRITING ANY CODE** without a validated Jira ticket
+- ❌ **COMMITTING ANYTHING** without 80% test coverage
+- ❌ **MODIFYING FILES** outside authorized scope
+- ❌ **BYPASSING ANY RULE** under any circumstances
+- 🛑 **IMMEDIATE STOP** if any violation is detected
+- ✅ **100% ENFORCEMENT** of all SDLC policies with no exceptions
 
 ## 🚫 Common Misconceptions
 
