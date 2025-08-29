@@ -132,6 +132,89 @@ get_project_info() {
     echo -e "${GREEN}✅ Project configuration collected${NC}"
 }
 
+# Collect and validate credentials
+collect_credentials() {
+    echo ""
+    echo -e "${BLUE}🔐 Credential Configuration${NC}"
+    echo -e "${YELLOW}These credentials are required for the AI_AGE_SDLC framework to function${NC}"
+    echo ""
+    
+    # Jira credentials
+    echo -e "${CYAN}📋 Jira Configuration:${NC}"
+    read -p "Enter Jira URL (e.g., https://yourcompany.atlassian.net): " JIRA_URL
+    read -p "Enter Jira email: " JIRA_EMAIL
+    read -sp "Enter Jira API token (hidden): " JIRA_API_TOKEN
+    echo ""
+    
+    # Confluence credentials
+    echo ""
+    echo -e "${CYAN}📚 Confluence Configuration:${NC}"
+    read -p "Enter Confluence URL (press Enter to use Jira URL + /wiki): " CONFLUENCE_URL
+    if [[ -z "$CONFLUENCE_URL" ]]; then
+        CONFLUENCE_URL="${JIRA_URL}/wiki"
+        echo "Using: $CONFLUENCE_URL"
+    fi
+    read -p "Enter Confluence email (press Enter to use Jira email): " CONFLUENCE_EMAIL
+    if [[ -z "$CONFLUENCE_EMAIL" ]]; then
+        CONFLUENCE_EMAIL="$JIRA_EMAIL"
+        echo "Using: $CONFLUENCE_EMAIL"
+    fi
+    read -sp "Enter Confluence API token (press Enter to use Jira token): " CONFLUENCE_API_TOKEN
+    echo ""
+    if [[ -z "$CONFLUENCE_API_TOKEN" ]]; then
+        CONFLUENCE_API_TOKEN="$JIRA_API_TOKEN"
+        echo "Using same token as Jira"
+    fi
+    
+    # GitHub credentials
+    echo ""
+    echo -e "${CYAN}🐙 GitHub Configuration:${NC}"
+    read -p "Enter GitHub organization/username: " GITHUB_OWNER
+    read -p "Enter GitHub repository name: " GITHUB_REPO
+    read -sp "Enter GitHub personal access token (hidden): " GITHUB_TOKEN
+    echo ""
+    
+    # Validate credentials
+    echo ""
+    echo -e "${YELLOW}🔍 Validating credentials...${NC}"
+    
+    # Test Jira connection
+    echo -n "Testing Jira connection... "
+    JIRA_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+        -u "${JIRA_EMAIL}:${JIRA_API_TOKEN}" \
+        -X GET \
+        "${JIRA_URL}/rest/api/2/myself" 2>/dev/null)
+    
+    if [[ "$JIRA_RESPONSE" == "200" ]]; then
+        echo -e "${GREEN}✅ Success${NC}"
+    else
+        echo -e "${RED}❌ Failed (HTTP $JIRA_RESPONSE)${NC}"
+        echo -e "${YELLOW}Warning: Jira credentials may be incorrect. Continue anyway? (y/n)${NC}"
+        read -p "" continue_anyway
+        if [[ "$continue_anyway" != "y" ]]; then
+            exit 1
+        fi
+    fi
+    
+    # Test GitHub connection (if token provided)
+    if [[ -n "$GITHUB_TOKEN" ]]; then
+        echo -n "Testing GitHub connection... "
+        GITHUB_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            "https://api.github.com/user" 2>/dev/null)
+        
+        if [[ "$GITHUB_RESPONSE" == "200" ]]; then
+            echo -e "${GREEN}✅ Success${NC}"
+        else
+            echo -e "${RED}❌ Failed (HTTP $GITHUB_RESPONSE)${NC}"
+            echo -e "${YELLOW}Warning: GitHub token may be incorrect${NC}"
+        fi
+    fi
+    
+    echo ""
+    echo -e "${GREEN}✅ Credential configuration complete${NC}"
+}
+
 # Create directory structure
 create_directory_structure() {
     echo -e "${YELLOW}📁 Creating directory structure...${NC}"
@@ -843,6 +926,7 @@ EOF
 create_environment_config() {
     echo -e "${YELLOW}🔧 Creating environment configuration...${NC}"
     
+    # Create .env.template with placeholder values
     cat > .env.template << EOF
 # AI_AGE_SDLC Environment Configuration
 # Copy to .env and fill in your actual values
@@ -875,6 +959,45 @@ PROJECT_NAME=${PROJECT_NAME}
 DEVELOPER_NAME=${DEVELOPER_NAME}
 DEVELOPER_EMAIL=${DEVELOPER_EMAIL}
 EOF
+
+    # Create actual .env file with collected credentials if they were provided
+    if [[ -n "$JIRA_URL" ]]; then
+        echo -e "${YELLOW}📝 Creating .env file with provided credentials...${NC}"
+        cat > .env << EOF
+# AI_AGE_SDLC Environment Configuration
+# Generated on $(date)
+
+# Jira Configuration
+JIRA_URL=${JIRA_URL}
+JIRA_EMAIL=${JIRA_EMAIL}
+JIRA_API_TOKEN=${JIRA_API_TOKEN}
+
+# Confluence Configuration
+CONFLUENCE_URL=${CONFLUENCE_URL}
+CONFLUENCE_EMAIL=${CONFLUENCE_EMAIL}
+CONFLUENCE_API_TOKEN=${CONFLUENCE_API_TOKEN}
+
+# GitHub Configuration
+GITHUB_OWNER=${GITHUB_OWNER}
+GITHUB_REPO=${GITHUB_REPO}
+GITHUB_TOKEN=${GITHUB_TOKEN}
+
+# SDLC Configuration
+MIN_TEST_COVERAGE=80
+MAX_RESPONSE_TIME_MS=200
+STRESS_TEST_USERS=100
+STRESS_TEST_DURATION=5m
+AUTO_COMMIT_ON_SUCCESS=true
+AUTO_PUSH_ON_SUCCESS=false
+
+# Project Configuration
+PROJECT_NAME=${PROJECT_NAME}
+DEVELOPER_NAME=${DEVELOPER_NAME}
+DEVELOPER_EMAIL=${DEVELOPER_EMAIL}
+EOF
+        chmod 600 .env  # Secure the file
+        echo -e "${GREEN}✅ .env file created with your credentials (secured with 600 permissions)${NC}"
+    fi
 
     echo -e "${GREEN}✅ Environment configuration created${NC}"
 }
@@ -1091,6 +1214,7 @@ main() {
     validate_framework
     check_prerequisites
     get_project_info
+    collect_credentials
     
     echo ""
     echo -e "${BLUE}🔧 Setting up AI_AGE_SDLC project: ${PROJECT_NAME}${NC}"
