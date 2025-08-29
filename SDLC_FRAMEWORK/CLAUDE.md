@@ -14,14 +14,39 @@ This file maintains compatibility with existing workflows while the enhanced ver
 
 ## Original CLAUDE.md Configuration
 
+## 🔧 FIRST TIME SETUP REQUIRED
+
+**⚠️ IMPORTANT: Before using this SDLC, you MUST set up your services!**
+
+### 📚 Complete Setup Guide
+**See `SETUP_GUIDE.md` for step-by-step instructions on:**
+- ✅ Creating and configuring Jira projects
+- ✅ Setting up Confluence spaces and templates  
+- ✅ Creating GitHub repositories with proper branches
+- ✅ Generating API tokens for all services
+- ✅ Automated setup and validation scripts
+
+### ⚡ Quick Setup Commands
+```bash
+# 1. Set up all services using the wizard
+./setup_sdlc_services.sh
+
+# 2. Validate all connections work
+./validate_sdlc_setup.sh
+
+# 3. You're ready to use the SDLC!
+```
+
 ## 🔐 Credentials Configuration
 Configure these environment variables or update the values below:
 ```yaml
-JIRA_URL: https://linvest21-jira.atlassian.net
+JIRA_URL: https://your-domain.atlassian.net
+JIRA_PROJECT_KEY: AISD  # Your project key
 JIRA_EMAIL: your-email@company.com
 JIRA_API_TOKEN: [Stored in .env]
 
-CONFLUENCE_URL: https://linvest21-jira.atlassian.net/wiki
+CONFLUENCE_URL: https://your-domain.atlassian.net/wiki
+CONFLUENCE_SPACE_KEY: AISDSPEC  # Your space key
 CONFLUENCE_EMAIL: your-email@company.com
 CONFLUENCE_API_TOKEN: [Stored in .env]
 
