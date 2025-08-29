@@ -1,0 +1,1 @@
+$(cat .compliance_monitor.pid 2>/dev/null || pgrep -f compliance-monitor.sh)

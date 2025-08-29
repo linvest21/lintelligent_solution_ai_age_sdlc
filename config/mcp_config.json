@@ -1,0 +1,190 @@
+{
+  "mcp_tools": {
+    "jira": {
+      "prefix": "mcp__jira_",
+      "available_functions": [
+        "get_issue",
+        "create_issue",
+        "update_issue",
+        "transition_issue",
+        "add_comment",
+        "add_attachment",
+        "add_worklog",
+        "search_issues",
+        "get_comments",
+        "assign_issue",
+        "update_field",
+        "create_subtask",
+        "link_issues",
+        "get_watchers",
+        "get_transitions"
+      ],
+      "required_params": {
+        "get_issue": ["issue_key"],
+        "create_issue": ["type", "summary", "project"],
+        "update_issue": ["issue_key", "fields"],
+        "transition_issue": ["issue_key", "transition"],
+        "add_comment": ["issue_key", "body"],
+        "add_attachment": ["issue_key", "file"],
+        "add_worklog": ["issue_key", "time_spent"],
+        "search_issues": ["jql"],
+        "assign_issue": ["issue_key", "assignee"]
+      }
+    },
+    "confluence": {
+      "prefix": "mcp__confluence_",
+      "available_functions": [
+        "get_page",
+        "create_page",
+        "update_page",
+        "delete_page",
+        "get_page_content",
+        "get_page_version",
+        "append_page",
+        "add_attachment",
+        "add_label",
+        "search",
+        "get_space",
+        "create_child_page",
+        "get_attachments",
+        "get_comments",
+        "add_comment"
+      ],
+      "required_params": {
+        "get_page": ["page_id"],
+        "create_page": ["title", "space", "content"],
+        "update_page": ["page_id", "content"],
+        "delete_page": ["page_id"],
+        "get_page_content": ["page_id"],
+        "append_page": ["page_id", "content"],
+        "add_attachment": ["page_id", "file"],
+        "add_label": ["page_id", "label"],
+        "search": ["query"],
+        "create_child_page": ["parent_id", "title", "content"]
+      }
+    }
+  },
+  "enforcement_rules": {
+    "pre_development": {
+      "require_jira_ticket": true,
+      "require_confluence_spec": true,
+      "allowed_ticket_statuses": ["In Progress", "Development"],
+      "required_spec_sections": [
+        "acceptance criteria",
+        "technical requirements",
+        "security requirements",
+        "performance requirements"
+      ]
+    },
+    "during_development": {
+      "update_interval_minutes": 10,
+      "log_all_file_changes": true,
+      "enforce_allowed_files": true,
+      "create_session_page": true,
+      "track_time_automatically": true
+    },
+    "testing": {
+      "minimum_unit_coverage": 80,
+      "require_integration_tests": true,
+      "require_stress_tests": true,
+      "require_security_scan": true,
+      "log_all_test_results": true,
+      "create_test_report_pages": true
+    },
+    "pre_commit": {
+      "validate_ticket_status": true,
+      "check_spec_version": true,
+      "enforce_coverage": true,
+      "require_all_tests_pass": true,
+      "auto_generate_commit_message": true,
+      "include_metadata": true
+    },
+    "post_development": {
+      "auto_transition_ticket": true,
+      "create_summary_page": true,
+      "notify_reviewers": true,
+      "generate_reports": true,
+      "update_documentation": true
+    }
+  },
+  "workflow_sequences": {
+    "initialization": [
+      {"tool": "mcp__jira_get_issue", "validate": "status"},
+      {"tool": "mcp__confluence_get_page", "validate": "sections"},
+      {"tool": "mcp__jira_add_comment", "message": "Development started"},
+      {"tool": "mcp__confluence_create_child_page", "title": "Dev Session"}
+    ],
+    "progress_update": [
+      {"tool": "mcp__jira_add_worklog", "interval": "10m"},
+      {"tool": "mcp__confluence_append_page", "content": "progress"},
+      {"tool": "mcp__jira_update_field", "field": "progress"}
+    ],
+    "test_reporting": [
+      {"tool": "mcp__jira_add_attachment", "file": "test_results"},
+      {"tool": "mcp__confluence_create_page", "title": "Test Report"},
+      {"tool": "mcp__jira_add_comment", "message": "test_summary"}
+    ],
+    "completion": [
+      {"tool": "mcp__jira_transition_issue", "to": "Ready for Review"},
+      {"tool": "mcp__confluence_update_page", "content": "final_report"},
+      {"tool": "mcp__jira_assign_issue", "to": "reviewer"}
+    ]
+  },
+  "compliance_monitoring": {
+    "enabled": true,
+    "check_interval_seconds": 600,
+    "checks": [
+      {
+        "name": "ticket_status",
+        "mcp_tool": "mcp__jira_get_issue",
+        "validation": "status in ['In Progress', 'Development']",
+        "on_failure": "create_blocker"
+      },
+      {
+        "name": "spec_version",
+        "mcp_tool": "mcp__confluence_get_page_version",
+        "validation": "version == original_version",
+        "on_failure": "add_warning_comment"
+      },
+      {
+        "name": "test_coverage",
+        "validation": "coverage >= 80",
+        "on_failure": "block_commit"
+      }
+    ]
+  },
+  "violation_handlers": {
+    "unauthorized_modification": {
+      "action": "create_blocker_issue",
+      "priority": "Critical",
+      "notify": ["lead", "architect"]
+    },
+    "coverage_below_threshold": {
+      "action": "block_commit",
+      "create_issue": true,
+      "add_label": "coverage-failed"
+    },
+    "spec_changed": {
+      "action": "alert",
+      "require_revalidation": true
+    },
+    "no_jira_ticket": {
+      "action": "stop_all",
+      "message": "CRITICAL: No Jira ticket found"
+    }
+  },
+  "reporting": {
+    "templates": {
+      "session_start": "Development session started for {ticket_id} by Claude Code",
+      "file_modified": "Modified: {file_path} ({change_type})",
+      "test_passed": "✅ {test_type} tests passed ({coverage}% coverage)",
+      "test_failed": "❌ {test_type} tests failed",
+      "session_complete": "Development complete. Duration: {duration}. Tests: {test_summary}"
+    },
+    "dashboards": {
+      "confluence_space": "DEV",
+      "create_metrics_page": true,
+      "update_frequency": "hourly"
+    }
+  }
+}

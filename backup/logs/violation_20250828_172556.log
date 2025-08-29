@@ -1,0 +1,52 @@
+VIOLATION REPORT - Thu Aug 28 05:25:56 PM EDT 2025
+================================
+Current Ticket: TEST-123
+Confluence Spec: NOT SET
+Test Coverage: UNKNOWN%
+Unauthorized Files: 0
+================================
+On branch feature/DEMO-20250828-lifecycle
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.compliance_monitor.pid
+	.env.template
+	.eslintrc.json
+	.gitignore
+	CLAUDE.md
+	CLAUDE_CODE_TIPS.md
+	CLAUDE_CODE_USER_GUIDE.md
+	CLAUDE_MCP.md
+	DAILY_WORKFLOW_GUIDE.md
+	PHYSICAL_CONNECTION_SETUP.md
+	QUICK_START.md
+	README.md
+	SETUP_COMPLETE.md
+	WHY_ABSOLUTELY_ENFORCING.md
+	compliance-monitor.sh
+	compliance_monitor_20250828.log
+	confluence_SPEC-20250828.md
+	doc/
+	generate-report.sh
+	init-project-demo.sh
+	init-project.sh
+	jira-confluence-helper.sh
+	load_env.sh
+	mcp_config.json
+	mcp_integration.py
+	package-lock.json
+	package.json
+	pre-commit-validate-demo.sh
+	pre-commit-validate.sh
+	scripts/
+	src/
+	test-all-connections.sh
+	tests/
+	tsconfig.json
+	violation-detector.sh
+	violation_20250828_172542.log
+	violation_20250828_172556.log
+
+nothing added to commit but untracked files present (use "git add" to track)
