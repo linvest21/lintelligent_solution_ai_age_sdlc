@@ -47,3 +47,5 @@ Thumbs.db
 results/
 test-results/workflows/upload_to_confluence.sh
 backup/duplicate_docs/MASTER_GUIDELINE.md
+# Violation logs
+violation_*.log
